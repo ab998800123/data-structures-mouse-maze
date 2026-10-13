@@ -1,0 +1,125 @@
+object Form4: TForm4
+  Left = 0
+  Top = 0
+  Caption = 'Form4'
+  ClientHeight = 877
+  ClientWidth = 1233
+  Color = clBtnFace
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -12
+  Font.Name = 'Segoe UI'
+  Font.Style = []
+  TextHeight = 15
+  object Label1: TLabel
+    Left = 23
+    Top = 163
+    Width = 81
+    Height = 15
+    Caption = #36664#20837#36855#23470#22823#23567':'
+  end
+  object Label2: TLabel
+    Left = 243
+    Top = 163
+    Width = 6
+    Height = 15
+    Caption = 'x'
+  end
+  object Edit1: TEdit
+    Left = 110
+    Top = 160
+    Width = 121
+    Height = 23
+    TabOrder = 0
+  end
+  object Edit2: TEdit
+    Left = 255
+    Top = 160
+    Width = 121
+    Height = 23
+    TabOrder = 1
+  end
+  object Button1: TButton
+    Left = 752
+    Top = 64
+    Width = 169
+    Height = 73
+    Caption = #36617#20837#27284#26696
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -21
+    Font.Name = 'Segoe UI'
+    Font.Style = []
+    ParentFont = False
+    TabOrder = 2
+    OnClick = Button1Click
+  end
+  object Button2: TButton
+    Left = 110
+    Top = 64
+    Width = 219
+    Height = 73
+    Caption = #29986#29983#36855#23470
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -21
+    Font.Name = 'Segoe UI'
+    Font.Style = []
+    ParentFont = False
+    TabOrder = 3
+    OnClick = Button2Click
+  end
+  object Button3: TButton
+    Left = 440
+    Top = 64
+    Width = 201
+    Height = 73
+    Caption = 'go'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -21
+    Font.Name = 'Segoe UI'
+    Font.Style = []
+    ParentFont = False
+    TabOrder = 4
+    OnClick = Button3Click
+  end
+  object PageControl1: TPageControl
+    Left = 0
+    Top = 208
+    Width = 1233
+    Height = 669
+    ActivePage = TabSheet2
+    Align = alBottom
+    TabOrder = 5
+    object TabSheet1: TTabSheet
+      Caption = 'TabSheet1'
+      object Memo1: TMemo
+        Left = -4
+        Top = 0
+        Width = 1125
+        Height = 561
+        Lines.Strings = (
+          'Memo1')
+        ScrollBars = ssVertical
+        TabOrder = 0
+      end
+    end
+    object TabSheet2: TTabSheet
+      Caption = 'TabSheet2'
+      ImageIndex = 1
+      object StringGrid1: TStringGrid
+        Left = 0
+        Top = 0
+        Width = 1225
+        Height = 639
+        Align = alBottom
+        TabOrder = 0
+      end
+    end
+  end
+  object OpenDialog1: TOpenDialog
+    Left = 928
+    Top = 96
+  end
+end

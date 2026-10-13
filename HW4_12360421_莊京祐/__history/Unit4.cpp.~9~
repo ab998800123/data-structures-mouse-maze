@@ -1,0 +1,245 @@
+﻿#include <vcl.h>
+#pragma hdrstop
+
+#include "Unit4.h"
+//---------------------------------------------------------------------------
+
+#pragma package(smart_init)
+#pragma resource "*.dfm"
+TForm4 *Form4;
+
+int **maze;
+int m, n;
+
+struct Direction {
+    int dx;
+    int dy;
+};
+
+struct position{
+    int x, y;
+    int dir;
+};
+
+Direction move[8];
+position stack[10000];
+int top = -1;
+
+
+void push(position step) {
+    top++;
+	stack[top] = step;
+}
+
+
+position pop() {
+	return stack[top--];
+}
+
+
+
+int **generatemaze(int **maze, int x, int y) {
+    int direction;
+    maze[x][y] = 0;
+	while (maze[x][y+2] == 1 || maze[x+2][y] == 1 || maze[x][y-2] == 1 || maze[x-2][y] == 1) {
+        direction = rand() % 4 + 1;
+        if (direction == 1 && maze[x][y+2] == 1) {
+            maze[x][y+1] = 0;
+            maze = generatemaze(maze, x, y+2);
+        }
+        else if (direction == 2 && maze[x-2][y] == 1) {
+            maze[x-1][y] = 0;
+            maze = generatemaze(maze, x-2, y);
+        }
+        else if (direction == 3 && maze[x][y-2] == 1) {
+            maze[x][y-1] = 0;
+            maze = generatemaze(maze, x, y-2);
+		}
+		else if (direction == 4 && maze[x+2][y] == 1) {
+            maze[x+1][y] = 0;
+            maze = generatemaze(maze, x+2, y);
+        }
+    }
+    return maze;
+}
+
+//---------------------------------------------------------------------------
+
+__fastcall TForm4::TForm4(TComponent* Owner)
+    : TForm(Owner)
+{
+    Memo1->Clear();
+    move[0].dx = -1;   move[0].dy = 0;
+    move[1].dx = -1;   move[1].dy = 1;
+    move[2].dx = 0;    move[2].dy = 1;
+    move[3].dx = 1;    move[3].dy = 1;
+    move[4].dx = 1;    move[4].dy = 0;
+    move[5].dx = 1;    move[5].dy = -1;
+    move[6].dx = 0;    move[6].dy = -1;
+    move[7].dx = -1;   move[7].dy = -1;
+}
+
+//---------------------------------------------------------------------------
+
+
+//---------------------------------------------------------------------------
+
+void __fastcall TForm4::Button2Click(TObject *Sender)
+{
+	int i, j;
+	if (maze) {
+		for (int i = 0; i < m; i++) delete[] maze[i];
+		delete[] maze;
+	}
+
+	m = Edit1->Text.ToInt();
+	n = Edit2->Text.ToInt();
+	maze = new int*[m];
+	for (int i = 0; i < m; i++) {
+		maze[i] = new int[n];
+	}
+
+	int Start_i = 1, Start_j = 1, End_i = m - 2, End_j = n - 2;
+	int x, y;
+	srand(time(NULL));
+
+	for (x = 0; x < m; x++) {
+		for (y = 0; y < n; y++) {
+			if (x == 0 || y == 0 || x == m - 1 || y == n - 1) {
+				maze[x][y] = 2; // 边界
+			}
+			else {
+                maze[x][y] = 1; // 內部
+            }
+        }
+	}
+
+    maze = generatemaze(maze, End_i, End_j);
+
+    maze[Start_i][Start_j-1] = 0;
+	maze[End_j][End_j+1] = 0;
+
+    StringGrid1->RowCount = m;
+    StringGrid1->ColCount = n;
+
+    for (i = 0; i < m; i++) {
+		for (j = 0; j < n; j++) {
+            StringGrid1->Cells[j][i] = maze[i][j];
+		}
+	}
+}
+
+//---------------------------------------------------------------------------
+
+
+void __fastcall TForm4::Button1Click(TObject *Sender)
+{
+ FILE *fp;
+	AnsiString out, fname;
+	int i, j;
+	if (OpenDialog1->Execute()) {
+		fname = OpenDialog1->FileName;
+		fp = fopen(fname.c_str(), "r+");
+		fscanf(fp, "%d %d", &m, &n);
+		Memo1->Lines->Add("m=" + IntToStr(m));
+		Memo1->Lines->Add("n=" + IntToStr(n));
+
+		maze = new int*[m];
+		for (i = 0; i < m; i++) {
+			maze[i] = new int[n];
+		}
+
+		for (i = 1; i <= m; i++) {
+			for (j = 1; j <= n; j++) {
+				fscanf(fp, "%d", &maze[i-1][j-1]);
+			}
+		}
+
+		for (i = 1; i <= m; i++) {
+			out = "";
+			for (j = 1; j <= n; j++) {
+                out += "  " + IntToStr(maze[i-1][j-1]);
+            }
+            Memo1->Lines->Add(out);
+		}
+
+        StringGrid1->RowCount = m + 1;
+        StringGrid1->ColCount = n + 1;
+		for (i = 1; i <= m; i++) {
+            for (j = 1; j <= n; j++) {
+                StringGrid1->Cells[j-1][i-1] = maze[i-1][j-1];
+            }
+		}
+
+        fclose(fp);
+    }
+	else {
+		Memo1->Lines->Add("Nothing happens.");
+	}
+}
+
+//---------------------------------------------------------------------------
+
+
+void __fastcall TForm4::Button3Click(TObject *Sender)
+{
+int u, v, i, j;
+	String str="";
+    position step;
+	int mark[200][200];
+	boolean found = false;
+	Memo1->Lines->Add("m=" + IntToStr(m) + " n=" + IntToStr(n));
+
+    // 初始化 mark 陣列
+    for (i = 0; i < m; i++) {
+        for (j = 0; j < n; j++) {
+			mark[i][j] = 0;  // 未走過的區域
+		}
+	}
+
+	// 設置起點和終點
+	step.x = 1;
+    step.y = 0;
+	step.dir = 0;  // 開始向上移動
+	push(step);
+	while (top != -1) {
+		step = pop();
+		while (step.dir <= 7) {
+            u = step.x + move[step.dir].dx;
+			v = step.y + move[step.dir].dy;
+			// 如果是有效的移動
+			if (u >= 0 && u < m && v >= 0 && v < n && maze[u][v] == 0 && mark[u][v] == 0) {
+				step.x = u;
+				step.y = v;
+				int x=step.dir;
+				Memo1->Lines->Add(".. (u,v,dir)="+IntToStr(u)+","+IntToStr(v)+","+IntToStr(x));
+				if ((u == m-2) && (v == n-1)){
+					  found = true;
+					  StringGrid1->Cells[n][m] = "&";
+					  str = "("+IntToStr(step.x)+","+IntToStr(step.y)+")";
+					  StringGrid1->Cells[step.y][step.x] = "->";
+					  while (top != -1){
+						step = pop();
+						int x = step.dir;
+						str = "("+IntToStr(step.x)+","+IntToStr(step.y)+","+IntToStr(x)+")-->"+str;
+						StringGrid1->Cells[step.y][step.x] = "->";
+						StringGrid1->Cells[0][1] = "->";
+					  }
+					  str = "(1,0,3)-->"+str;
+					  Memo1->Lines->Add(str);
+                      break;
+				}
+				else if ((maze[u][v]==0) && (mark[u][v]==0)){
+					mark[u][v] = 1;
+					StringGrid1->Cells[v][u] = "*";
+					step.dir = step.dir+1;
+					push(step);
+					step.x = u; step.y = v; step.dir = 0;
+				}
+			}
+			step.dir++;  // 嘗試下一個方向
+		}
+    }
+}
+//---------------------------------------------------------------------------
+
