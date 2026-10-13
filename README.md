@@ -1,2 +1,44 @@
-# data-structures-mouse-maze
-A C++Builder VCL mouse maze project with random maze generation and stack-based path finding.
+# 老鼠走迷宮
+
+使用 C++Builder VCL 製作的迷宮產生與尋路程式。
+
+## 功能
+
+- 輸入迷宮的列數與欄數，產生隨機迷宮。
+- 從文字檔載入迷宮，並在網格中顯示。
+- 使用堆疊記錄搜尋路徑，並嘗試八個移動方向。
+- 在介面中查看搜尋過程與找到的路徑。
+
+## 使用技術
+
+- C++ 與 Embarcadero C++Builder
+- VCL 圖形介面
+- 遞迴式隨機迷宮生成
+- Stack（堆疊）與方向陣列尋路
+
+## 執行方式
+
+1. 在 Windows 上使用 Embarcadero C++Builder 開啟 `Project3.cbproj`。
+2. 編譯並執行專案。
+3. 在程式介面輸入列數與欄數，按「產生迷宮」建立迷宮；也可以載入迷宮文字檔，再按「go」開始搜尋。
+
+## 迷宮文字檔格式
+
+檔案第一行放列數與欄數，後續每行列出對應列的格子數值，數值之間以空白分隔。例如：
+
+```text
+5 5
+2 2 2 2 2
+0 0 1 1 2
+2 0 0 1 2
+2 1 0 0 0
+2 2 2 2 2
+```
+
+程式以 `0` 表示可通行格、`1` 表示牆、`2` 表示邊界。尋路從迷宮入口開始，嘗試找到出口。
+
+## 專案檔案
+
+- `Project3.cbproj`：C++Builder 專案檔
+- `Unit4.cpp`、`Unit4.h`：迷宮生成、檔案載入與尋路程式
+- `Unit4.dfm`：VCL 表單介面設定
