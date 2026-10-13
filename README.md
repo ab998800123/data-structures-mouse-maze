@@ -37,6 +37,9 @@
 
 程式以 `0` 表示可通行格、`1` 表示牆、`2` 表示邊界。尋路從迷宮入口開始，嘗試找到出口。
 
+## 可直接開啟
+Windows 使用者可以直接執行 `Win32/Debug/Project3.exe`，不必先用 C++Builder 編譯。
+
 ## 專案檔案
 
 - `Project3.cbproj`：C++Builder 專案檔
